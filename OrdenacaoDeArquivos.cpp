@@ -35,6 +35,11 @@ bool cmp(Registro a, Registro b){
 	return a.chave < b.chave;
 }
 
+//funcao de comparacao para a ordenacao de P caminho
+bool cmp2(MinimoHeap a, MinimoHeap b){
+	return a.registro.chave > b.registro.chave;
+}
+
 //arquivo de entrada principal
 FILE *f;
 
@@ -170,8 +175,23 @@ void criarArquivos(int maximoReg){
 	fecharAquivo();
 }
 
-void ordenarPcaminho(){
+//funcao que ordena em P caminho
+void ordenarPcaminho(int maximoReg){
+	abrirArquivosAuxLeitura();
 	
+	MinimoHeap heapArray[MAXNARQS];
+	priority_queue<MinimoHeap, vector<MinimoHeap>, cmp2> heapPrioridade;
+	
+	char token[TAM_TOKEN];
+	int i;
+	for(i=0; i < MAXNARQS/2; i++){
+		if(!(fgets(token, sizeof(token), arquivosP[i]))){
+			break;
+		}
+		heapArray.registro=extrairRegistro(token);
+		heapArray.indexArquivo=i;
+		heapPrioridade.push_back(heapArray[i]);
+	}
 }
 
 int main(){
@@ -179,8 +199,12 @@ int main(){
 	
 	//calcular quantidade maxima de registros que a memoria suporta
 	int maximoReg=maximoRegistros();
+	
 	//criar os arquivos que vao conter as runs
 	criarArquivos(maximoReg);
+	
+	//mandando ordenar em P caminho
+	ordenarPcaminho(maximoReg);
 		
 	return 0;
 }
